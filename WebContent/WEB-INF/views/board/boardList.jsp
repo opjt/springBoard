@@ -1,3 +1,4 @@
+<%@page import="com.spring.user.vo.UserVo"%>
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
 	pageEncoding="EUC-KR"%>
 <%@include file="/WEB-INF/views/common/common.jsp"%>
@@ -76,9 +77,21 @@
 </script>
 
 <body>
+	
 	<table align="center">
 		<tr>
-			<td align="right">total : ${totalCnt}</td>
+		 	<td align="left">
+		 		<% 
+			        if (user != null) {
+			    %>
+			        <span><%=user.getUserName()%></span>
+			    <% } else { %>
+			        <a href="/user/login.do">login</a> <a href="/user/join.do">Join</a>
+			    <% } %>
+                
+                <span style="float:right">total : ${totalCnt}</span>
+            </td>
+            
 		</tr>
 		<tr>
 			<td>
@@ -99,7 +112,12 @@
 			</td>
 		</tr>
 		<tr>
-			<td align="right"><a href="/board/boardWrite.do">글쓰기</a></td>
+			<td align="right">
+				<a href="/board/boardWrite.do">글쓰기</a>
+			 	<%if (user != null) {%>
+			        <a href="/user/logout.do">logout</a> 
+			    <%}%>
+			</td>
 		</tr>
 		<tr>
 			<td>
