@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +56,7 @@ public class BoardController {
 		List<CodeVo> codeList = boardService.selectCodeList();
 		Map<String, String> codeMap = new HashMap<>();
 		for (CodeVo code : codeList) {
-		    codeMap.put(code.getCodeId(), code.getCodeName());
+		    codeMap.put( code.getCodeId(), code.getCodeName());
 		}
 		
 		model.addAttribute("codeList", codeList);
@@ -66,6 +67,38 @@ public class BoardController {
 		
 		return "board/boardList";
 	}
+	
+	@RequestMapping(value = "/board/getBoards.do", method = RequestMethod.GET)
+	@ResponseBody // 반환되는 데이터를 HTTP 응답 본문으로 사용
+	public Map<String, Object> boardList(Locale locale, PageVo pageVo,
+	        @RequestParam(value = "codes", required = false) String codes) throws Exception {
+	   
+		Map<String, Object> resultMap = new HashMap<>();
+	    List<BoardVo> boardList = new ArrayList<BoardVo>();
+	    int page = 1;
+	    
+	    if (pageVo.getPageNo() == 0) {
+	        pageVo.setPageNo(page);
+	    }
+	    
+	    if (codes != null && codes.length() != 0) {
+	    	 List<String> paramCodeList = Arrays.asList(codes.split(","));
+		     pageVo.setBoardCodeList(paramCodeList);
+		         
+	    }
+	    
+	    List<CodeVo> codeList = boardService.selectCodeList();
+        Map<String, String> codeMap = new HashMap<>();
+        for (CodeVo code : codeList) {
+            codeMap.put((String)code.getCodeId(), code.getCodeName());
+        }
+        
+	    boardList = boardService.SelectBoardList(pageVo);
+	    resultMap.put("code", codeMap);
+	    resultMap.put("board", boardList);
+	    return resultMap;
+	}
+
 	
 	@RequestMapping(value = "/board/{boardType}/{boardNum}/boardView.do", method = RequestMethod.GET)
 	public String boardView(Locale locale, Model model

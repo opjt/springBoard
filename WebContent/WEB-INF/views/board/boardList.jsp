@@ -35,25 +35,38 @@
         });
         
         $j("[value='조회']").click(function(){
-            // 체크된 코드들을 수집하여 ","로 구분하여 조합
             var checkedValues = [];
             $j("[name='code']:checked").each(function(){
                 checkedValues.push($j(this).val());
             });
-
-            // 파라미터 문자열 생성
-            var params = checkedValues.join(",");
-
-            // Ajax 요청 보내기
+			console.log(checkedValues)
             $j.ajax({
                 type: "GET",
-                url: "/board/boardList.do",
-                data: { codes: params },
+                url: "/board/getBoards.do",
+                data: { codes: checkedValues.join(",") },
                 success: function(data, textStatus, jqXHR) {
-                    console.log("?"); 
+                    // 받아온 데이터로 테이블을 재구성
+                    console.log(data);
+                    var boards = data.board;
+              		var code = data.code;
+              		
+                    var html = `<tr>
+						<td width="80" align="center">Type</td>
+						<td width="40" align="center">No</td>
+						<td width="300" align="center">Title</td>
+					</tr>`;
+                   
+                    boards.forEach(function(item) {
+                   		var type = item.boardType
+                        html += "<tr>";
+                        html += "<td align='center' data-board-type='" + item.boardType + "'>" + code[type] + "</td>";
+                        html += "<td>" + item.boardNum + "</td>";
+                        html += "<td><a href='/board/" + item.boardType + "/" + item.boardNum + "/boardView.do?pageNo=" + item.pageNo + "'>" + item.boardTitle + "</a></td>";
+                        html += "</tr>";
+                    });
+                    $j("#boardTable tbody").html(html);
                 },
                 error: function(xhr, status, error) {
-                    // 오류 처리
                     console.error(xhr.responseText);
                 }
             });
@@ -76,13 +89,11 @@
 						<td width="300" align="center">Title</td>
 					</tr>
 					<c:forEach items="${boardList}" var="list">
-					    <c:if test="${codeMap[list.boardType] ne null}">
-					        <tr>
-					            <td align="center">${codeMap[list.boardType]}</td>
-					            <td>${list.boardNum}</td>
-					            <td><a href="/board/${list.boardType}/${list.boardNum}/boardView.do?pageNo=${pageNo}">${list.boardTitle}</a></td>
-					        </tr>
-					    </c:if>
+				        <tr>
+				            <td align="center" data-board-type="${list.boardType}">${codeMap[list.boardType]}</td>
+				            <td>${list.boardNum}</td>
+				            <td><a href="/board/${list.boardType}/${list.boardNum}/boardView.do?pageNo=${pageNo}">${list.boardTitle}</a></td>
+				        </tr>
 					</c:forEach>
 				</table>
 			</td>
