@@ -1,6 +1,8 @@
 package com.spring.board.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.spring.board.dao.BoardDao;
 import com.spring.board.vo.BoardVo;
 import com.spring.board.vo.PageVo;
+import com.spring.common.vo.CodeVo;
 
 @Repository
 public class BoardDaoImpl implements BoardDao{
@@ -62,5 +65,11 @@ public class BoardDaoImpl implements BoardDao{
 		// TODO Auto-generated method stub
 		return sqlSession.delete("board.boardDelete", boardVo);
 	}
+	@Override
+	public List<CodeVo> selectCodeList() throws Exception {
+		// TODO Auto-generated method stub
+		return sqlSession.selectList("board.codeList");
+	}
+
 	
 }

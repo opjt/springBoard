@@ -1,13 +1,12 @@
 package com.spring.board.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
-import org.codehaus.jackson.JsonProcessingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.board.HomeController;
 import com.spring.board.service.boardService;
@@ -36,19 +34,32 @@ public class BoardController {
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	@RequestMapping(value = "/board/boardList.do", method = RequestMethod.GET)
-	public String boardList(Locale locale, Model model,PageVo pageVo) throws Exception{
+	public String boardList(Locale locale, Model model,PageVo pageVo,
+			@RequestParam(value = "codes", required = false) String codes) throws Exception{
 		
 		List<BoardVo> boardList = new ArrayList<BoardVo>();
-		
 		int page = 1;
 		int totalCnt = 0;
 		if(pageVo.getPageNo() == 0){
 			pageVo.setPageNo(page);;
 		}
+		if (codes != null && codes.length() != 0) {
+	        // codes 파라미터 값을 ","로 분리하여 List<String>으로 변환
+	        List<String> codeList = Arrays.asList(codes.split(","));
+	        pageVo.setBoardCodeList(codeList);
+	    }
 		
 		boardList = boardService.SelectBoardList(pageVo);
 		totalCnt = boardService.selectBoardCnt();
+		//codeList를 map형식으로 반환 key:codeId, value:codeName
+		List<CodeVo> codeList = boardService.selectCodeList();
+		Map<String, String> codeMap = new HashMap<>();
+		for (CodeVo code : codeList) {
+		    codeMap.put(code.getCodeId(), code.getCodeName());
+		}
 		
+		model.addAttribute("codeList", codeList);
+		model.addAttribute("codeMap", codeMap);
 		model.addAttribute("boardList", boardList);
 		model.addAttribute("totalCnt", totalCnt);
 		model.addAttribute("pageNo", page);
@@ -65,7 +76,15 @@ public class BoardController {
 		
 		
 		boardVo = boardService.selectBoard(boardType,boardNum);
+		List<CodeVo> codeList = new ArrayList<CodeVo>();
+		codeList = boardService.selectCodeList(); //코드 목록 불러오
+		Map<String, String> codeMap = new HashMap<>();
+		for (CodeVo code : codeList) {
+		    codeMap.put(code.getCodeId(), code.getCodeName());
+		}
 		
+		model.addAttribute("codeList", codeList);
+		model.addAttribute("codeMap", codeMap);
 		model.addAttribute("boardType", boardType);
 		model.addAttribute("boardNum", boardNum);
 		model.addAttribute("board", boardVo);
@@ -81,13 +100,20 @@ public class BoardController {
 		
 		BoardVo boardVo = new BoardVo();
 		
-		
 		boardVo = boardService.selectBoard(boardType,boardNum);
+		List<CodeVo> codeList = new ArrayList<CodeVo>();
+		codeList = boardService.selectCodeList(); //코드 목록 불러오
+		Map<String, String> codeMap = new HashMap<>();
+		for (CodeVo code : codeList) {
+		    codeMap.put(code.getCodeId(), code.getCodeName());
+		}
 		
+		model.addAttribute("codeMap", codeMap);
+		model.addAttribute("codeList", codeList);
 		model.addAttribute("boardType", boardType);
 		model.addAttribute("boardNum", boardNum);
 		model.addAttribute("board", boardVo);
-		
+
 		return "board/boardModify";
 	}
 	@RequestMapping(value = "/board/boardModifyAction.do", method = RequestMethod.POST)
@@ -131,8 +157,8 @@ public class BoardController {
 	public String boardWrite(Locale locale, Model model) throws Exception{
 		
 		List<CodeVo> codeList = new ArrayList<CodeVo>();
-//		codeList = boardService.selectCodeList();
-//		model.addAttribute("codeList", codeList);
+		codeList = boardService.selectCodeList(); //코드 목록 불러오
+		model.addAttribute("codeList", codeList);
 		
 		return "board/boardWrite";
 	}
