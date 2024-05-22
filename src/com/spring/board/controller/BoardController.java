@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.ibatis.type.TypeReference;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -196,21 +198,48 @@ public class BoardController {
 		return "board/boardWrite";
 	}
 	
+	
 	@RequestMapping(value = "/board/boardWriteAction.do", method = RequestMethod.POST)
 	@ResponseBody
-	public String boardWriteAction(Locale locale,BoardVo boardVo) throws Exception{
-		
-		HashMap<String, String> result = new HashMap<String, String>();
-		CommonUtil commonUtil = new CommonUtil();
-		
-		int resultCnt = boardService.boardInsert(boardVo);
-		
-		result.put("success", (resultCnt > 0)?"Y":"N");
+	public String boardsAdd(@RequestBody Map<String, Object>[] boardList) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        List<BoardVo> convertedList = new ArrayList<>();
+        HashMap<String, String> result = new HashMap<String, String>();
+        CommonUtil commonUtil = new CommonUtil();
+
+        for (Map<String, Object> map : boardList) {
+            BoardVo board = mapper.convertValue(map, BoardVo.class);
+            convertedList.add(board);
+        }
+        int resultCnt = 0;
+        for (BoardVo board : convertedList) {
+        	int returnCount = boardService.boardInsert(board);
+        	resultCnt+= returnCount;
+        }
+        
+        result.put("success", (resultCnt == convertedList.size())?"Y":"N");
 		String callbackMsg = commonUtil.getJsonCallBackString(" ",result);
 		
 		System.out.println("callbackMsg::"+callbackMsg);
 		
 		return callbackMsg;
 	}
+	
+//	@RequestMapping(value = "/board/boardWriteAction.do", method = RequestMethod.POST)
+//	@ResponseBody
+//	public String boardWriteAction(Locale locale,BoardVo boardVo) throws Exception{
+//		
+//		HashMap<String, String> result = new HashMap<String, String>();
+//		CommonUtil commonUtil = new CommonUtil();
+//		
+//		int resultCnt = boardService.boardInsert(boardVo);
+//		
+//		result.put("success", (resultCnt > 0)?"Y":"N");
+//		String callbackMsg = commonUtil.getJsonCallBackString(" ",result);
+//		
+//		System.out.println("callbackMsg::"+callbackMsg);
+//		
+//		return callbackMsg;
+//	}
 	
 }
