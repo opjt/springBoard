@@ -1,41 +1,40 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@page import="com.spring.user.vo.UserVo"%>
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-	pageEncoding="EUC-KR"%>
 <%@include file="/WEB-INF/views/common/common.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <title>list</title>
 </head>
 <script type="text/javascript">
     $j(document).ready(function(){
-        // °³º° Ã¼Å©¹Ú½º¿¡ ´ëÇÑ ÀÌº¥Æ® Ã³¸®
+        // ê°œë³„ ì²´í¬ë°•ìŠ¤ì— ëŒ€í•œ ì´ë²¤íŠ¸ ì²˜ë¦¬
         $j("[name='code']").click(function(){
             var allChecked = true;
             $j("[name='code']").each(function(){
                 if(!$j(this).prop("checked")) {
-                    allChecked = false; // ÇÏ³ª¶óµµ Ã¼Å©µÇÁö ¾ÊÀº °æ¿ì
+                    allChecked = false; // í•˜ë‚˜ë¼ë„ ì²´í¬ë˜ì§€ ì•Šì€ ê²½ìš°
                 }
             });
 
             if(allChecked) {
-                $j("[name='codeAll']").prop("checked", true); // ¸ğµÎ Ã¼Å©µÇ¾úÀ» ¶§ ÀüÃ¼ ¼±ÅÃ Ã¼Å©¹Ú½º ¼±ÅÃ
+                $j("[name='codeAll']").prop("checked", true); // ëª¨ë‘ ì²´í¬ë˜ì—ˆì„ ë•Œ ì „ì²´ ì„ íƒ ì²´í¬ë°•ìŠ¤ ì„ íƒ
             } else {
-                $j("[name='codeAll']").prop("checked", false); // ÇÏ³ª¶óµµ Ã¼Å©µÇÁö ¾Ê¾ÒÀ» ¶§ ÀüÃ¼ ¼±ÅÃ Ã¼Å©¹Ú½º ÇØÁ¦
+                $j("[name='codeAll']").prop("checked", false); // í•˜ë‚˜ë¼ë„ ì²´í¬ë˜ì§€ ì•Šì•˜ì„ ë•Œ ì „ì²´ ì„ íƒ ì²´í¬ë°•ìŠ¤ í•´ì œ
             }
         });
 
-        // ÀüÃ¼ ¼±ÅÃ Ã¼Å©¹Ú½º¿¡ ´ëÇÑ ÀÌº¥Æ® Ã³¸®
+        // ì „ì²´ ì„ íƒ ì²´í¬ë°•ìŠ¤ì— ëŒ€í•œ ì´ë²¤íŠ¸ ì²˜ë¦¬
         $j("[name='codeAll']").click(function(){
             if($j(this).prop("checked")) {
-                $j("[name='code']").prop("checked", true); // ÀüÃ¼ ¼±ÅÃ ½Ã ¸ğµç Ã¼Å©¹Ú½º ¼±ÅÃ
+                $j("[name='code']").prop("checked", true); // ì „ì²´ ì„ íƒ ì‹œ ëª¨ë“  ì²´í¬ë°•ìŠ¤ ì„ íƒ
             } else {
-                $j("[name='code']").prop("checked", false); // ÀüÃ¼ ÇØÁ¦ ½Ã ¸ğµç Ã¼Å©¹Ú½º ÇØÁ¦
+                $j("[name='code']").prop("checked", false); // ì „ì²´ í•´ì œ ì‹œ ëª¨ë“  ì²´í¬ë°•ìŠ¤ í•´ì œ
             }
         });
         
-        $j("[value='Á¶È¸']").click(function(){
+        $j("[value='ì¡°íšŒ']").click(function(){
             var checkedValues = [];
             $j("[name='code']:checked").each(function(){
                 checkedValues.push($j(this).val());
@@ -46,7 +45,7 @@
                 url: "/board/getBoards.do",
                 data: { codes: checkedValues.join(",") },
                 success: function(data, textStatus, jqXHR) {
-                    // ¹Ş¾Æ¿Â µ¥ÀÌÅÍ·Î Å×ÀÌºíÀ» Àç±¸¼º
+                    // ë°›ì•„ì˜¨ ë°ì´í„°ë¡œ í…Œì´ë¸”ì„ ì¬êµ¬ì„±
                     console.log(data);
                     var boards = data.board;
               		var code = data.code;
@@ -113,7 +112,7 @@
 		</tr>
 		<tr>
 			<td align="right">
-				<a href="/board/boardWrite.do">±Û¾²±â</a>
+				<a href="/board/boardWrite.do">ê¸€ì“°ê¸°</a>
 			 	<%if (user != null) {%>
 			        <a href="/user/logout.do">logout</a> 
 			    <%}%>
@@ -121,12 +120,12 @@
 		</tr>
 		<tr>
 			<td>
-				<label><input type="checkbox" name="codeAll" value="#ALL">ÀüÃ¼</label>
+				<label><input type="checkbox" name="codeAll" value="#ALL">ì „ì²´</label>
 				<c:forEach items="${codeList}" var="list">
 					<label><input type="checkbox" name="code" value="${list.codeId}">${list.codeName}</label>
 					
 				</c:forEach>
-				<input type="button" value="Á¶È¸">		
+				<input type="button" value="ì¡°íšŒ">		
 			</td>
 			
 		</tr>

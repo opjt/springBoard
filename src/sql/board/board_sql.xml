@@ -7,6 +7,7 @@
     	<result property="boardNum" 	column="BOARD_NUM"/>
     	<result property="boardTitle" 	column="BOARD_TITLE"/>
     	<result property="boardComment" column="BOARD_COMMENT"/>
+    	<result property="creator" column="CREATOR"/>
     </resultMap>
     
     <resultMap type="com.spring.common.vo.CodeVo" id="codeVo">
@@ -70,6 +71,7 @@
 			,BOARD_NUM
 			,BOARD_TITLE
 			,BOARD_COMMENT
+			,CREATOR
 		FROM
 			BOARD
     	WHERE 	BOARD_TYPE = #{boardType}
@@ -95,7 +97,7 @@
       WHERE BOARD_TYPE = #{boardType})
         ,#{boardTitle}
         ,#{boardComment}
-        ,'SYSTEM'
+        ,#{creator}
         ,TO_CHAR(SYSDATE)
         ,'SYSTEM'
         ,TO_CHAR(SYSDATE)
@@ -107,7 +109,7 @@
         UPDATE BOARD
         SET BOARD_TITLE = #{boardTitle},
             BOARD_COMMENT = #{boardComment},
-            MODIFIER = 'SYSTEM',
+            MODIFIER = #{modifier},
             MODIFIED_TIME = TO_CHAR(SYSDATE)
         WHERE BOARD_TYPE = #{boardType}
         AND BOARD_NUM = #{boardNum}

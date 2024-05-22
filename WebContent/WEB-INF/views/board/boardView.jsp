@@ -1,10 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-	pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/views/common/common.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <title>boardView</title>
 </head>
 <script type="text/javascript">
@@ -13,16 +11,16 @@
 		
 		$j('#deleteLink').click(function(event) {
 	        event.preventDefault(); // 
-	        if (confirm('Á¤¸» »èÁ¦ÇÏ½Ã°Ú½À´Ï±î?')) {
+	        if (confirm('ì •ë§ ì‚­ì œí•˜ì‹œê² ìŠµë‹ˆê¹Œ?')) {
 	            $j.ajax({
 	                url: '/board/${board.boardType}/${board.boardNum}/boardDeleteAction.do',
 	                type: 'POST',
 	                success: function(data, textStatus, jqXHR) {
-	                    alert('»èÁ¦¿Ï·á');
+	                    alert('ì‚­ì œì™„ë£Œ');
 	                    window.location.href = '/board/boardList.do'; 
 	                },
 	                error: function (jqXHR, textStatus, errorThrown) {
-	                    alert('½ÇÆĞ');
+	                    alert('ì‹¤íŒ¨');
 	                }
 	            });
 	        }
@@ -50,7 +48,7 @@
 					</tr>
 					<tr>
 						<td align="center">Writer</td>
-						<td></td>
+						<td>${board.creator}</td>
 					</tr>
 				</table>
 			</td>

@@ -1,10 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-	pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/views/common/common.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <title>boardWrite</title>
 </head>
 <script type="text/javascript">
@@ -22,15 +20,15 @@
 			    data : param,
 			    success: function(data, textStatus, jqXHR)
 			    {
-					alert("¼öÁ¤¿Ï·á");
+					alert("ìˆ˜ì •ì™„ë£Œ");
 					
-					alert("¸Þ¼¼Áö:"+data.success);
+					alert("ë©”ì„¸ì§€:"+data.success);
 					
 					location.href = "/board/${board.boardType}/${board.boardNum}/boardView.do?pageNo=";
 			    },
 			    error: function (jqXHR, textStatus, errorThrown)
 			    {
-			    	alert("½ÇÆÐ");
+			    	alert("ì‹¤íŒ¨");
 			    }
 			});
 		});
@@ -44,7 +42,7 @@
 			<input name="boardNum" type="hidden" value="${board.boardNum}">
 			<input name="boardType" type="hidden" value="${board.boardType}">
 			<tr>
-				<td align="right"><input id="submit" type="button" value="¼öÁ¤">
+				<td align="right"><input id="submit" type="button" value="ìˆ˜ì •">
 				</td>
 			</tr>
 			<tr>
@@ -71,8 +69,11 @@
 									cols="55">${board.boardComment}</textarea></td>
 						</tr>
 						<tr>
-							<td align="center">Writer</td>
-							<td></td>
+							<td align="center">Modifier</td>
+							<td>
+								<span id="creator"><%= (user != null) ? user.getUserName() : "ìµëª…" %></span>
+								<input type="hidden" name="modifier" value="<%= (user != null) ? user.getUserName() : "ìµëª…" %>">
+							</td>
 						</tr>
 					</table>
 				</td>

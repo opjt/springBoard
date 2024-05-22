@@ -1,16 +1,30 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-	pageEncoding="EUC-KR"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@include file="/WEB-INF/views/common/common.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <title>boardWrite</title>
 </head>
 <script type="text/javascript">
 $j(document).ready(function(){
 	
-	$j("#loginBtn").on("click",function(){
+	$j("#loginBtn").on("click", function() {
+		var userId = $j("#inputId").val().trim();
+		var userPw = $j("#inputPw").val().trim();
+		
+		// 아이디와 패스워드가 입력되지 않았을 때 알림 메시지 표시
+		if (!userId) {
+			alert("아이디를 입력하세요.");
+			$j("#inputId").focus();
+			return;
+		}
+		
+		if (!userPw) {
+			alert("비밀번호를 입력하세요.");
+			$j("#inputPw").focus();
+			return;
+		}
+
 		var $frm = $j('.loginForm :input');
 		var param = $frm.serialize();
 		
@@ -22,11 +36,11 @@ $j(document).ready(function(){
 		    success: function(data, textStatus, jqXHR)
 		    {
 				if(data.success == "N") {
-					alert("�߸��� �α��� �����Դϴ� ");
-					return
+					alert("잘못된 로그인 정보입니다 ");
+					return;
 				}
 				
-				alert("�α��� ����");
+				alert("로그인 성공");
 				window.location.href = "/board/boardList.do";
 				
 		    },
@@ -37,8 +51,6 @@ $j(document).ready(function(){
 		});
 	});
 });
-
-
 </script>
 <body>
 	<form class="loginForm">
