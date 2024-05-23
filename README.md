@@ -56,3 +56,32 @@ public String boardsAdd(@RequestBody Map<String, Object>[] boardList) throws Exc
 }
 ```
 
+## Day4 24-05-23
+
+### 글 동시작성 (완료)
+
+### mbti 검사 만들기 (진행)
+- [https://www.16personalities.com/ko/](https://www.16personalities.com/ko/)
+- BOARD 테이블의 BOARD_TYPE을 사용하여 유형 생성 및 구분 문항은 BOARD_COMMENT를 사용하여 리스트 생성   
+유형 - EI, IE, NS, SN, FT, TF, JP, PJ  
+동의 비동의 선택은 radio버튼으로 구현
+- 기존 pageVo에 showCount, checkBoardType 필드를 추가하여 기존 코드를 재활용함
+- 유형별 페이지당 5문항씩 4페이지 생성  
+선택 결과는 모든 질문의 유형점수를 더하여 각 지표에서 더 높은 점수를 받은 성격 유형이라고 판단
+- Radio 선택 값은 1 - 7  
+```
+점수 배치 예)    
+E 의 질문인 경우
+매우 동의 – E : 3점
+동의 – E : 2점
+약갂 동의 – E : 1점
+모르겠음 – 0점
+약갂 비동의 – I : 1점
+비동의 – I : 2점
+매우 비동의 – I : 3점
+합산 점수가 같거나 모두 0점인경우 사전순
+으로 빠른 유형 출력
+Radio버튼을 모두 선택한 후
+다음 페이지로 이동
+```
+- 4페이지 답변을 모두 선택한 후 각 페이지에서 동의 비동의 radio 선택한 값을 통해 I 또는 E , S 또는 N, F 또는 T, P 또는 J 를 반환시켜 MBTI 결과 출력 페이지 구현
