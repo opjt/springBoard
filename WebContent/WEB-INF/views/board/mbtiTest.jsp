@@ -25,7 +25,6 @@
             type: "GET",
             url: "/mbti/getQuestion.do",
             success: function(data, textStatus, jqXHR) {
-            	var codeMap = data.code
                 var questions = data.board;
                 var tableContent = '';
                 var questionCount = questions.length;
@@ -47,7 +46,7 @@
                     tableContent += '<td align="center">';
                     tableContent += '동의 ';
                     for (var j = 1; j <= 7; j++) {
-                        tableContent += '<input type="radio" name="question' + i + '" value="' + j + '" data-type="' + codeMap[question.boardType] + '"> ';
+                        tableContent += '<input type="radio" name="question' + i + '" value="' + j + '" data-type="' + question.boardType + '"> ';
                     }
                     tableContent += '비동의';
                     tableContent += '</td>';
@@ -68,10 +67,10 @@
         });
         
         $j('#pageNext').click(function() {
-        	if (!validatePage(currentPage)) {
+        	/* if (!validatePage(currentPage)) {
                 alert("모든 질문에 답변해 주세요.");
                 return;
-            } 
+            }  */
             $j('#pageSubmit').hide();
             var nextPage = currentPage + 1;
             if ($j('#questPage-' + nextPage).length > 0) {
@@ -119,55 +118,35 @@
             }
         });
         
-       /*  $j(document).on('change', 'input[type=radio]', function() {
-            var value = parseInt($j(this).val());
-            var type = $j(this).data('type');
-
-            // 점수 계산 로직
-            if (value <= 3) {
-                //동의쪽 
-                mbtiScores[type.charAt(0)] += (4 - value); // 3, 2, 1 점
-            } else if (value >= 5) {
-                //비동의쪽 
-                mbtiScores[type.charAt(1)] += (value - 4); // 1, 2, 3 점
-            }
-            console.log()
-        }); */
+      
         
         $j('#pageSubmit').click(function() { 
+        	 var answers = []; // 사용자의 답변을 저장할 배열
         	$j('input[type=radio]:checked').each(function() {
                 var value = parseInt($j(this).val());
                 var type = $j(this).data('type');
+                answers.push({ type: type, value: value }); // 답변을 배열에 추가
+             
+            });
+        	
 
-                // 점수 계산 로직
-                if (value <= 3) {
-                    //동의쪽 
-                    mbtiScores[type.charAt(0)] += (4 - value); // 3, 2, 1 점
-                } else if (value >= 5) {
-                    //비동의쪽 
-                    mbtiScores[type.charAt(1)] += (value - 4); // 1, 2, 3 점
+            $j.ajax({
+                type: "POST",
+                url: "/mbti/calculate.do",
+                data: JSON.stringify(answers), // 답변 데이터를 JSON 형식으로 전송
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                    // 서버에서 계산된 MBTI 결과를 받아옴
+                    var mbtiResult = data.success;
+                    
+					console.log(mbtiResult)
+                    window.location.href = "/mbti/resultPage.do?mbti=" + mbtiResult;
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
                 }
             });
-        	console.log(mbtiScores)
-        	
-        	 var form = document.createElement('form');
-        	    form.setAttribute('method', 'POST');
-        	    form.setAttribute('action', '/mbti/result.do'); // 폼이 전송될 URL 설정
-
-        	    // 데이터 입력 필드 생성
-        	    for (const [key, value] of Object.entries(mbtiScores)) {
-        	        var input = document.createElement('input');
-        	        input.setAttribute('type', 'hidden'); // 숨겨진 입력 필드로 설정
-        	        input.setAttribute('name', key); // 각각의 mbtiScores 항목을 키로 사용
-        	        input.setAttribute('value', value); // 각 항목의 값 설정
-        	        form.appendChild(input); // 폼에 입력 필드 추가
-        	    }
-
-        	    // 폼을 문서에 추가
-        	    document.body.appendChild(form);
-
-        	    // 폼 전송
-        	    form.submit();
         });
         
     });

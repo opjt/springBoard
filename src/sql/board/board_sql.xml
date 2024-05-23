@@ -46,14 +46,16 @@
 		            AND 1=1
 		        </if>
     		</where>
-    		and EXISTS (
-            	SELECT 1 
-	            FROM COM_CODE C 
-	            WHERE 
-	            	B.BOARD_TYPE = C.CODE_ID 
-		            AND C.CODE_TYPE = 'menu' 
-		            AND C.CODE_NAME IS NOT NULL
-        	)
+    		<if test="checkBoardType">
+                AND EXISTS (
+                    SELECT 1 
+                    FROM COM_CODE C 
+                    WHERE 
+                        B.BOARD_TYPE = C.CODE_ID 
+                        AND C.CODE_TYPE = 'menu' 
+                        AND C.CODE_NAME IS NOT NULL
+                )
+            </if>
 		)
 		WHERE NUMROW BETWEEN (#{pageNo}-1)*#{showCount} + 1 AND (#{pageNo})*#{showCount} 
     </select>
