@@ -88,7 +88,7 @@
 			        <a href="/user/login.do">login</a> <a href="/user/join.do">Join</a>
 			    <% } %>
                 
-                <span style="float:right">total : ${totalCnt}</span>
+                <span style="float:right"><a href="/mbti/test.do">mbti</a> total : ${totalCnt}</span>
             </td>
             
 		</tr>

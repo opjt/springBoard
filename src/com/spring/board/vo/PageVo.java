@@ -5,6 +5,15 @@ import java.util.List;
 public class PageVo {
 	
 	private int pageNo = 0;
+	private int showCount = 10; //한번에 보여지는 게시글 수 
+	public int getShowCount() {
+		return showCount;
+	}
+
+	public void setShowCount(int showCount) {
+		this.showCount = showCount;
+	}
+
 	private List<String> boardCodeList;
 	
 	public List<String> getBoardCodeList() {

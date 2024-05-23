@@ -55,7 +55,7 @@
 		            AND C.CODE_NAME IS NOT NULL
         	)
 		)
-		WHERE NUMROW BETWEEN (#{pageNo}-1)*10 + 1 AND (#{pageNo})*10 
+		WHERE NUMROW BETWEEN (#{pageNo}-1)*#{showCount} + 1 AND (#{pageNo})*#{showCount} 
     </select>
     
     <select id="boardTotal" parameterType="Integer" resultType="Integer">
@@ -127,4 +127,36 @@
 		  WHERE CODE_TYPE = 'menu'	
     </select>
 
+
+	<!-- mbti -->
+	
+	<!-- <select id="mbtiList" resultMap="boardVo">
+        SELECT 
+		  BOARD_TYPE
+		  ,BOARD_NUM
+		  ,BOARD_TITLE
+		  ,BOARD_COMMENT
+		FROM 
+		(
+		  SELECT
+		      	BOARD_TYPE
+				,BOARD_NUM
+				,BOARD_TITLE
+				,BOARD_COMMENT
+		      	,ROW_NUMBER() OVER(ORDER BY BOARD_NUM DESC) AS NUMROW
+			FROM
+				BOARD B
+			WHERE
+				BOARD_TYPE LIKE 'mbti%'		 
+    		AND EXISTS (
+            	SELECT 1 
+	            FROM COM_CODE C 
+	            WHERE 
+	            	B.BOARD_TYPE = C.CODE_ID 
+		            AND C.CODE_TYPE = 'menu' 
+		            AND C.CODE_NAME IS NOT NULL
+        	)
+		)
+		WHERE NUMROW BETWEEN 1 AND 20 
+    </select> -->	
 </mapper>

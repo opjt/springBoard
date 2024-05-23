@@ -225,21 +225,6 @@ public class BoardController {
 		return callbackMsg;
 	}
 	
-//	@RequestMapping(value = "/board/boardWriteAction.do", method = RequestMethod.POST)
-//	@ResponseBody
-//	public String boardWriteAction(Locale locale,BoardVo boardVo) throws Exception{
-//		
-//		HashMap<String, String> result = new HashMap<String, String>();
-//		CommonUtil commonUtil = new CommonUtil();
-//		
-//		int resultCnt = boardService.boardInsert(boardVo);
-//		
-//		result.put("success", (resultCnt > 0)?"Y":"N");
-//		String callbackMsg = commonUtil.getJsonCallBackString(" ",result);
-//		
-//		System.out.println("callbackMsg::"+callbackMsg);
-//		
-//		return callbackMsg;
-//	}
+
 	
 }
