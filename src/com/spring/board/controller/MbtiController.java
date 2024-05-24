@@ -43,9 +43,10 @@ public class MbtiController {
 
 		return "board/mbtiTest";
 	}
-	@RequestMapping(value = "/mbti/resultPage.do", method = RequestMethod.GET)
-	public String mbtiResult(Locale locale, Model model,@RequestParam(value = "mbti", required = false) String mbti) throws Exception {
 
+	@RequestMapping(value = "/mbti/resultPage.do", method = RequestMethod.GET)
+	public String mbtiResult(Locale locale, Model model, @RequestParam(value = "mbti", required = false) String mbti)
+			throws Exception {
 
 		model.addAttribute("mbti", mbti);
 
@@ -85,10 +86,10 @@ public class MbtiController {
 
 	@RequestMapping(value = "/mbti/calculate.do", method = RequestMethod.POST)
 	@ResponseBody
-	public String handleMbtiResult(@RequestBody List<Map<String, Object>> answers) throws Exception{
+	public String handleMbtiResult(@RequestBody List<Map<String, Object>> answers) throws Exception {
 		HashMap<String, String> result = new HashMap<String, String>();
 		CommonUtil commonUtil = new CommonUtil();
-		
+
 		Map<String, Integer> mbtiScores = new HashMap<>();
 		mbtiScores.put("E", 0);
 		mbtiScores.put("I", 0);
@@ -99,18 +100,27 @@ public class MbtiController {
 		mbtiScores.put("J", 0);
 		mbtiScores.put("P", 0);
 
+		Map<Integer, Integer> scoreMap = new HashMap<>();
+		scoreMap.put(1, 3);  // 매우 동의 
+		scoreMap.put(2, 2);  // 동의 
+		scoreMap.put(3, 1);  // 약간 동의 
+		scoreMap.put(4, 0);  // 
+		scoreMap.put(5, 1); // 약간 비동의 
+		scoreMap.put(6, 2); // 비동의 
+		scoreMap.put(7, 3); // 매우 비동의
+
 		// 각 질문 유형에 따른 점수 누적
 		for (Map<String, Object> answer : answers) {
 			String type = (String) answer.get("type");
 			int value = (int) answer.get("value");
-
-			if (value <= 3) { //3보다 같거나 작을경우 1:매우동의 2:동의 3:약간동의 
-				int agree = (4 - value);
-				mbtiScores.put(type.substring(0, 1), mbtiScores.get(type.substring(0, 1)) + (agree));
-			} else if (value >= 5) { //5보다 클경우 7:매우비동의 6:비동의 5:야간비동의 
-				int disagree = (value - 4);
-				mbtiScores.put(type.substring(1, 2), mbtiScores.get(type.substring(1, 2)) + (disagree));
+			String mbtiType = type.substring(0,1); //ex) EI 일 경우 E 값 저장
+			if(value == 5 || value == 6 ||value == 7 ) { // 선택값이 비동의 부분일 경우
+				mbtiType = type.substring(1,2); //ex) EI 일 경우 I 값 저장
 			}
+			
+			int setValue = mbtiScores.get(mbtiType) + scoreMap.get(value);
+			mbtiScores.put(mbtiType, setValue);
+			
 		}
 
 		// E/I, S/N, T/F, J/P 비교하여 MBTI 조합 만들기
@@ -118,39 +128,39 @@ public class MbtiController {
 
 		// E/I 유형 비교
 		if (mbtiScores.get("E") >= mbtiScores.get("I")) {
-		    mbtiBuilder.append("E");
+			mbtiBuilder.append("E");
 		} else {
-		    mbtiBuilder.append("I");
+			mbtiBuilder.append("I");
 		}
 
 		// S/N 유형 비교
 		if (mbtiScores.get("N") >= mbtiScores.get("S")) {
-		    mbtiBuilder.append("N");
+			mbtiBuilder.append("N");
 		} else {
-		    mbtiBuilder.append("S");
+			mbtiBuilder.append("S");
 		}
 
 		// T/F 유형 비교
 		if (mbtiScores.get("F") >= mbtiScores.get("T")) {
-		    mbtiBuilder.append("F");
+			mbtiBuilder.append("F");
 		} else {
-		    mbtiBuilder.append("T");
+			mbtiBuilder.append("T");
 		}
 
 		// J/P 유형 비교
 		if (mbtiScores.get("J") >= mbtiScores.get("P")) {
-		    mbtiBuilder.append("J");
+			mbtiBuilder.append("J");
 		} else {
-		    mbtiBuilder.append("P");
+			mbtiBuilder.append("P");
 		}
 
 		String mbtiResult = mbtiBuilder.toString();
-		
+
 		result.put("success", mbtiResult);
-		String callbackMsg = commonUtil.getJsonCallBackString(" ",result);
-		
-		System.out.println("callbackMsg::"+callbackMsg);
-		
+		String callbackMsg = commonUtil.getJsonCallBackString(" ", result);
+		System.err.println(mbtiScores.toString());
+		System.out.println("callbackMsg::" + callbackMsg);
+
 		return callbackMsg;
 	}
 }
