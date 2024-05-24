@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recruit">
+    
+    <resultMap type="com.spring.board.vo.BoardVo" id="boardVo">
+    	<result property="boardType" 	column="BOARD_TYPE"/>
+    	<result property="boardNum" 	column="BOARD_NUM"/>
+    	<result property="boardTitle" 	column="BOARD_TITLE"/>
+    	<result property="boardComment" column="BOARD_COMMENT"/>
+    	<result property="creator" column="CREATOR"/>
+    </resultMap>
+    
+    <resultMap type="com.spring.common.vo.CodeVo" id="codeVo">
+    	<result property="codeType" 	column="CODE_TYPE"/>
+    	<result property="codeId" 	column="CODE_ID"/>
+    	<result property="codeName" 	column="CODE_NAME"/>
+    	
+    </resultMap>
+    
+   
+    
+    <select id="findByNameAndPhone" parameterType="com.spring.recruit.vo.RecruitVo" resultType="com.spring.recruit.vo.RecruitVo">
+    	SELECT
+        	SEQ
+	        ,NAME
+	        ,BIRTH
+	        ,GENDER
+	        ,PHONE
+	        ,EMAIL
+	        ,ADDR
+	        ,LOCATION
+	        ,WORK_TYPE as workType
+	        ,SUBMIT 
+		FROM
+			RECRUIT
+    	WHERE NAME = #{name}
+    	AND   phone= #{phone}
+    </select>	
+    
+    <select id="recruitInsert" parameterType="com.spring.recruit.vo.RecruitVo">
+        INSERT INTO RECRUIT (
+	        SEQ
+	        ,NAME
+	        ,BIRTH
+	        ,GENDER
+	        ,PHONE
+	        ,EMAIL
+	        ,ADDR
+	        ,LOCATION
+	        ,WORK_TYPE
+        ) VALUES(
+	        (SELECT NVL(TO_NUMBER(MAX(SEQ)+1), 1)
+	      	FROM RECRUIT)
+	        ,#{name}
+	        ,#{birth}
+	        ,#{gender}
+	        ,#{phone}
+	        ,#{email}
+	        ,#{addr}
+	        ,#{location}
+	        ,#{workType}
+        )
+    </select>
+    <update id="recruitUpdate" parameterType="com.spring.recruit.vo.RecruitVo">
+        UPDATE RECRUIT
+        SET GENDER = #{gender},
+        	BIRTH = #{birth},
+            EMAIL = #{email},
+            ADDR = #{addr},
+            LOCATION = #{location},
+            WORK_TYPE = #{workType}
+        WHERE NAME = #{name}
+    	AND   phone= #{phone}
+    </update>
+    
+</mapper>

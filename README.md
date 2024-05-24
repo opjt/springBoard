@@ -85,3 +85,58 @@ Radio버튼을 모두 선택한 후
 다음 페이지로 이동
 ```
 - 4페이지 답변을 모두 선택한 후 각 페이지에서 동의 비동의 radio 선택한 값을 통해 I 또는 E , S 또는 N, F 또는 T, P 또는 J 를 반환시켜 MBTI 결과 출력 페이지 구현
+
+## Day5 24-05-24
+
+### mbti 검사 만들기 (완료)
+- 클라이언트에서 진행하던 점수 계산을 백단에서 진행하는 형식으로 변경
+- CASE문 활용하여 점수계산 로직 직관성 있게 수정
+
+### 입사지원 만들기 (진행)
+- 로그인 프론트 페이지 개발(이름,휴대폰번호 입력)
+- 입사지원서 폼 학력,경력,자격증 추가 버튼 클릭하여 행 추가 
+```jsp
+function addNewRow(tableId) {
+    var table = document.querySelector(tableId);
+    var lastRow = table.querySelector('tr:last-child'); // 해당 테이블의 마지막 행 선택
+    var newRow = lastRow.cloneNode(true); // 마지막 행 복제
+
+    // 복제된 행에 있는 input 요소 초기화 (필요하다면)
+    var inputs = newRow.querySelectorAll('input');
+    inputs.forEach(function(input) {
+        input.value = ''; // 값 초기화
+        input.checked = false;
+    });
+
+    // 복제된 행을 추가
+    table.appendChild(newRow);
+}
+```        
+- 저장 버튼 클릭시 입력한 값으로 하여 디비에 저장
+
+### 트러블 슈팅
+JSP에서 form로 데이터 보낼 때 한글 깨짐현상  
+
+webapp/web.xml 수정 
+```xml
+<filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+        <param-name>encoding</param-name>	
+        <param-value>UTF-8</param-value>
+    </init-param>
+</filter>	
+<filter-mapping>	
+    <filter-name>encodingFilter</filter-name>	
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+servlet-context.xml
+```xml
+<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">		   
+    <beans:property name="prefix" value="/WEB-INF/views/" />	
+	<beans:property name="suffix" value=".jsp" />
+    <beans:property name="contentType" value="text/html; charset=UTF-8"/>	<!-- 한글 utf-8 -->	
+</beans:bean>
+```
