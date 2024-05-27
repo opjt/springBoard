@@ -140,3 +140,62 @@ servlet-context.xml
     <beans:property name="contentType" value="text/html; charset=UTF-8"/>	<!-- 한글 utf-8 -->	
 </beans:bean>
 ```
+
+## Day6 24-05-27
+
+### 입사지원 만들기 (진행)
+- 학력,경력,자격증 저장 및 불러오기 기능 추가
+- 이력서 제출 기능 추가 (제출시 더이상 수정 불가)
+- 필수입력사항 유효성 검사 실시(기본정보,학력)
+- 학력입력시 최고학력 정보 표출(ex 대학교 4년제 졸업)(수정필요)
+- 경력입력시 경력종합하여 n년 n개월 정보 표출
+- YYYY.MM 형식 날짜 입력시 자동으로 . 붙도록 기능 추가
+```js
+$j(document).on("input", ".dateInput", function(event) {
+    var inputValue = $j(this).val();
+    console.log(inputValue)
+
+    // 최대 길이 초과 시 잘라내기
+    if (inputValue.length > 7) {
+        $j(this).val(inputValue.slice(0, 7));
+        return;
+    }
+
+    var pattern = /^\d{4}\.\d{2}$/;
+
+    // 형식에 맞지 않는 경우 경고 메시지 표시 및 숫자와 점(.) 이외의 문자 제거
+    if (!pattern.test(inputValue)) {
+        $j(this).val(inputValue.replace(/[^0-9.]/g, '')); 
+    }
+    // 네 자리 입력 시 점(.) 추가
+    if (inputValue.length === 4 && inputValue.indexOf('.') === -1) {
+        $j(this).val(inputValue + ".");
+    }
+    });
+
+$j(document).on("keyup", ".dateInput", function(event) {
+    var inputValue = $j(this).val();
+
+    // 점(.) 형식으로 포맷팅
+    var formattedValue = inputValue.replace(/(\d{4})(?=\d)/g, '$1.');
+    $j(this).val(formattedValue);
+
+    // 백스페이스 처리: 점(.) 삭제
+    if (event.keyCode === 8 && inputValue[inputValue.length - 1] === '.' && inputValue.length % 5 === 0) {
+        $j(this).val(inputValue.slice(0, -1));
+    }
+});
+```
+
+
+### 트러블 슈팅
+행추가시 .dateInput 이벤트 작동 안하는 현상 document에 이벤트를 적용함으로서 동적으로 생성되는 요소에 대응함
+```js
+//기존 코드
+$j(".dateInput").on("input", function(event) {
+}
+//수정 콛
+$j(document).on("input", ".dateInput", function(event) {
+}
+
+```

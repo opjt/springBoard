@@ -1,76 +1,207 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="recruit">
-    
-    <resultMap type="com.spring.board.vo.BoardVo" id="boardVo">
-    	<result property="boardType" 	column="BOARD_TYPE"/>
-    	<result property="boardNum" 	column="BOARD_NUM"/>
-    	<result property="boardTitle" 	column="BOARD_TITLE"/>
-    	<result property="boardComment" column="BOARD_COMMENT"/>
-    	<result property="creator" column="CREATOR"/>
-    </resultMap>
-    
-    <resultMap type="com.spring.common.vo.CodeVo" id="codeVo">
-    	<result property="codeType" 	column="CODE_TYPE"/>
-    	<result property="codeId" 	column="CODE_ID"/>
-    	<result property="codeName" 	column="CODE_NAME"/>
-    	
-    </resultMap>
-    
-   
-    
-    <select id="findByNameAndPhone" parameterType="com.spring.recruit.vo.RecruitVo" resultType="com.spring.recruit.vo.RecruitVo">
-    	SELECT
-        	SEQ
-	        ,NAME
-	        ,BIRTH
-	        ,GENDER
-	        ,PHONE
-	        ,EMAIL
-	        ,ADDR
-	        ,LOCATION
-	        ,WORK_TYPE as workType
-	        ,SUBMIT 
+
+
+
+	<select id="findByNameAndPhone"
+		parameterType="com.spring.recruit.vo.RecruitVo"
+		resultType="com.spring.recruit.vo.RecruitVo">
+		SELECT
+		SEQ
+		,NAME
+		,BIRTH
+		,GENDER
+		,PHONE
+		,EMAIL
+		,ADDR
+		,LOCATION
+		,WORK_TYPE as workType
+		,SUBMIT
 		FROM
-			RECRUIT
-    	WHERE NAME = #{name}
-    	AND   phone= #{phone}
-    </select>	
-    
-    <select id="recruitInsert" parameterType="com.spring.recruit.vo.RecruitVo">
-        INSERT INTO RECRUIT (
-	        SEQ
-	        ,NAME
-	        ,BIRTH
-	        ,GENDER
-	        ,PHONE
-	        ,EMAIL
-	        ,ADDR
-	        ,LOCATION
-	        ,WORK_TYPE
-        ) VALUES(
-	        (SELECT NVL(TO_NUMBER(MAX(SEQ)+1), 1)
-	      	FROM RECRUIT)
-	        ,#{name}
-	        ,#{birth}
-	        ,#{gender}
-	        ,#{phone}
-	        ,#{email}
-	        ,#{addr}
-	        ,#{location}
-	        ,#{workType}
-        )
-    </select>
-    <update id="recruitUpdate" parameterType="com.spring.recruit.vo.RecruitVo">
-        UPDATE RECRUIT
-        SET GENDER = #{gender},
-        	BIRTH = #{birth},
-            EMAIL = #{email},
-            ADDR = #{addr},
-            LOCATION = #{location},
-            WORK_TYPE = #{workType}
-        WHERE NAME = #{name}
-    	AND   phone= #{phone}
-    </update>
-    
+		RECRUIT
+		WHERE NAME = #{name}
+		AND phone=
+		#{phone}
+	</select>
+
+	<select id="recruitInsert"
+		parameterType="com.spring.recruit.vo.RecruitVo">
+		INSERT INTO RECRUIT (
+		SEQ
+		,NAME
+		,BIRTH
+		,GENDER
+		,PHONE
+		,EMAIL
+		,ADDR
+		,LOCATION
+		,WORK_TYPE
+		) VALUES(
+		(SELECT NVL(TO_NUMBER(MAX(SEQ)+1), 1)
+		FROM RECRUIT)
+		,#{name}
+		,#{birth}
+		,#{gender}
+		,#{phone}
+		,#{email}
+		,#{addr}
+		,#{location}
+		,#{workType}
+		)
+	</select>
+	<update id="recruitUpdate"
+		parameterType="com.spring.recruit.vo.RecruitVo">
+		UPDATE RECRUIT
+		SET GENDER = #{gender},
+		BIRTH = #{birth},
+		EMAIL = #{email},
+		ADDR = #{addr},
+		LOCATION = #{location},
+		WORK_TYPE =
+		#{workType},
+		SUBMIT = #{submit}
+		WHERE NAME = #{name}
+		AND phone= #{phone}
+	</update>
+
+	<delete id="deleteEducation" parameterType="String">
+		DELETE FROM EDUCATION
+		WHERE seq = #{seq}
+	</delete>
+	
+	<delete id="deleteCareer" parameterType="String">
+		DELETE FROM CAREER
+		WHERE seq = #{seq}
+	</delete>
+	
+	<delete id="deleteCertificate" parameterType="String">
+		DELETE FROM CERTIFICATE
+		WHERE seq = #{seq}
+	</delete>
+	
+
+	<insert id="insertEducation" parameterType="java.util.List">
+		INSERT ALL
+		<!-- List 내의 각 EducationVo 객체를 순회하면서 삽입 -->
+		<foreach collection="list" item="item">
+			INTO EDUCATION (
+			EDU_SEQ,
+			SEQ,
+			SCHOOL_NAME,
+			DIVISION,
+			START_PERIOD,
+			END_PERIOD,
+			MAJOR,
+			GRADE,
+			LOCATION
+			)
+			VALUES (
+			#{item.eduSeq},
+			#{item.seq},
+			#{item.schoolName},
+			#{item.division},
+			#{item.startPeriod},
+			#{item.endPeriod},
+			#{item.major},
+			#{item.grade},
+			#{item.location}
+			)
+		</foreach>
+		SELECT * FROM dual
+	</insert>
+	
+	<insert id="insertCareer" parameterType="java.util.List">
+		INSERT ALL
+		<!-- List 내의 각 EducationVo 객체를 순회하면서 삽입 -->
+		<foreach collection="list" item="item">
+			INTO CAREER (
+				CAR_SEQ,
+				SEQ,
+				COMP_NAME,
+				START_PERIOD,
+				END_PERIOD,
+				TASK,
+				LOCATION
+			)
+			VALUES (
+				#{item.carSeq},
+				#{item.seq},
+				#{item.compName},
+				#{item.startPeriod},
+				#{item.endPeriod},
+				#{item.task},
+				#{item.location}
+			)
+		</foreach>
+		SELECT * FROM dual
+	</insert>
+	
+	<insert id="insertCertificate" parameterType="java.util.List">
+		INSERT ALL
+		<!-- List 내의 각 EducationVo 객체를 순회하면서 삽입 -->
+		<foreach collection="list" item="item">
+			INTO CERTIFICATE (
+				CERT_SEQ,
+				SEQ,
+				QUALIFI_NAME,
+				ACQU_DATE,
+				ORGANIZE_NAME
+			)
+			VALUES (
+				#{item.certSeq},
+				#{item.seq},
+				#{item.qualifiName},
+				#{item.acquDate},
+				#{item.organizeName}
+			)
+		</foreach>
+		SELECT * FROM dual
+	</insert>
+
+	<select id="selectEducation" parameterType="com.spring.recruit.vo.RecruitVo"
+		resultType="com.spring.recruit.vo.EducationVo">
+		SELECT
+			EDU_SEQ as eduSeq,
+			SEQ,
+			SCHOOL_NAME as schoolName,
+			DIVISION,
+			START_PERIOD as startPeriod,
+			END_PERIOD as endPeriod,
+			MAJOR,
+			GRADE,
+			LOCATION
+		FROM
+			EDUCATION
+		WHERE SEQ = #{seq}
+	</select>
+	
+	<select id="selectCareer" parameterType="com.spring.recruit.vo.RecruitVo"
+		resultType="com.spring.recruit.vo.CareerVo">
+		SELECT
+			CAR_SEQ as carSeq,
+			SEQ,
+			COMP_NAME as compName,
+			START_PERIOD as startPeriod,
+			END_PERIOD as endPeriod,
+			TASK,
+			LOCATION
+		FROM
+			CAREER
+		WHERE SEQ = #{seq}
+	</select>
+	
+	<select id="selectCertificate" parameterType="com.spring.recruit.vo.RecruitVo"
+		resultType="com.spring.recruit.vo.CertificateVo">
+		SELECT
+			CERT_SEQ as certSeq,
+			SEQ,
+			QUALIFI_NAME as qualifiName,
+			ACQU_DATE as acquDate,
+			ORGANIZE_NAME as organizeName
+		FROM
+			CERTIFICATE
+		WHERE SEQ = #{seq}
+	</select>
+
 </mapper>
